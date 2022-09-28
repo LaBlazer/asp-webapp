@@ -1,0 +1,52 @@
+﻿@{
+    ViewData["Title"] = "Employees";
+}
+
+<h1 class="display-5">Employees</h1>
+
+@model IEnumerable<EmployeeViewModel>
+
+@(Html
+    .Grid(Model)
+    .Build(columns =>
+    {
+
+        columns.Add(model => model.Employee.EmployeeId).Titled("ID");
+        columns.Add(model => model.Employee.FirstName).Titled("Name");
+        columns.Add(model => model.Employee.LastName).Titled("Surname");
+        columns.Add(model => model.Employee.Date).Titled("Date").Formatted("{0:d}");
+        columns.Add(model => model.HighestSalary).Titled("Salary").Formatted("{0} CZK");
+
+        columns.Add(model => @Html.ActionLink("", "Edit", "Employee", new { id = model.Employee.EmployeeId }, 
+        new { @class = "btn btn-success btn-sm bi bi-pencil-fill" })).Encoded(false).Css("text-center");
+
+        columns.Add(model => @Html.ActionLink("", "Delete", "Employee", new { id = model.Employee.EmployeeId },
+        new { @class = "btn btn-danger btn-sm bi bi-trash3-fill" })).Encoded(false).Css("text-center");
+
+    })
+    .Using(GridFilterMode.Header)
+    .Empty("No data found")
+    .Filterable()
+    .Sortable()
+    .Pageable()
+)
+
+<div class="text-center mt-3">
+    <button type="button" class="btn btn-outline-warning" id="updateBtn" onclick="location.href='@Url.Action("Update", "Employee")'">
+        Update Data
+    </button>
+</div>
+
+@section Scripts
+{
+  <script>
+        $("#updateBtn").on("click", function () {
+            // disable button
+            $(this).prop("disabled", true);
+            // add spinner to button
+            $(this).html(
+                `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Updating...`
+            );
+        });
+  </script>
+}
